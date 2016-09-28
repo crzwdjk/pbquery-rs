@@ -1,0 +1,11 @@
+[package]
+name = "pbquery"
+version = "0.1.0"
+authors = ["arcady"]
+
+[dependencies]
+libloading = "0.2.4"
+libc = "0.2.14"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
