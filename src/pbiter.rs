@@ -5,7 +5,7 @@ fn read_varint(buf: &[u8]) -> (usize, usize) {
     let mut acc = 0 as usize;
     let mut cnt = 0 as usize;
     for b in buf {
-        acc = (acc << 7) | (b & 0x7f) as usize;
+        acc += ((b & 0x7f) as usize) << (cnt * 7);
         cnt += 1;
         if b & 0x80 == 0 { return (acc, cnt) }
     }
@@ -80,6 +80,7 @@ impl<'a> Iterator for PBIter<'a> {
         let (rawtag, taglen) = read_varint(self.buf);
         let wiretype = wire_type((rawtag & 0x7) as u8);
         let rest = self.buf.split_at(taglen).1;
+        if rest.is_empty() { return None }
         let (len, start) = match wiretype {
             WireType::FIXED64 => (8, 0),
             WireType::FIXED32 => (4, 0),
